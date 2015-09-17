@@ -3,6 +3,10 @@ module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     concat: {
+      dist: {
+        src: ['public/client/**/*.js'],
+        dest: 'public/dist/<%= pkg.name %>.js'
+      }
     },
 
     mochaTest: {
@@ -16,19 +20,31 @@ module.exports = function(grunt) {
 
     nodemon: {
       dev: {
-        script: 'server.js'
+        script: 'index.js'
       }
     },
 
     uglify: {
+      options: {
+        banner: '/*! <%= pkg.name %> <%= grunt.template.today("dd-mm-yyyy") %> */\n'
+      },
+      dist: {
+        files: {
+          'public/dist/<%= pkg.name %>.min.js': ['<%= concat.dist.dest %>']
+        }
+      }
     },
 
     jshint: {
       files: [
-        // Add filespec list here
+        'server.js',
+        'index.js',
+        'public/**/*.js',
+        'lib/**/*.js',
+        'app/**/*.js'
       ],
       options: {
-        force: 'true',
+        force: false,
         jshintrc: '.jshintrc',
         ignores: [
           'public/lib/**/*.js',
@@ -38,6 +54,11 @@ module.exports = function(grunt) {
     },
 
     cssmin: {
+      dist: {
+        files: {
+          'public/dist/style.min.css': 'public/style.css'
+        }
+      }
     },
 
     watch: {
@@ -59,6 +80,31 @@ module.exports = function(grunt) {
 
     shell: {
       prodServer: {
+        'git-add': {
+          command: 'git --no-pager add .',
+          options: {
+            stdout: true,
+            stderr: true,
+            // execOptions: { cwd: '../deploy'}
+          }
+        },
+        'git-commit':           {
+          command: 'git --no-pager commit -m "update"',
+          options: {
+            stdout: true,
+            stderr: true,
+            // execOptions: { cwd: '../deploy'}
+          }
+        },
+        'git-push':             {
+          command: 'git --no-pager push heroku master',
+          options: {
+            failOnError: true,
+            stdout: true,
+            stderr: true,
+            // execOptions: { cwd: '../deploy'}
+          }
+        }
       }
     },
   });
@@ -90,23 +136,32 @@ module.exports = function(grunt) {
   ////////////////////////////////////////////////////
 
   grunt.registerTask('test', [
+    'jshint',
     'mochaTest'
   ]);
 
   grunt.registerTask('build', [
+    'concat',
+    'uglify',
+    'cssmin'
   ]);
+
+  grunt.registerTask('server-prod', [
+    'shell'
+  ])
 
   grunt.registerTask('upload', function(n) {
     if(grunt.option('prod')) {
-      // add your production server task here
+      console.log('remote server');
+      grunt.task.run([ 'server-prod' ]);
     } else {
+      console.log('local server');
       grunt.task.run([ 'server-dev' ]);
     }
   });
 
-  grunt.registerTask('deploy', [
-    // add your deploy tasks here
-  ]);
-
+  grunt.registerTask('deploy', function(){
+    grunt.task.run([ 'test', 'build', 'upload' ]);
+  });
 
 };

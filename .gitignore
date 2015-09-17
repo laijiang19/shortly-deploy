@@ -3,6 +3,8 @@
 .LSOverride
 azure.err
 iisnode.yml
+*.log
+*.sqlite
 
 # Icon must ends with two \r.
 Icon
