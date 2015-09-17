@@ -6,11 +6,7 @@
   "repository": "",
   "license": "Proprietary",
   "private": true,
-  "engines": {
-    "node": "0.12.x"
-  },
   "scripts": {
-    "postinstall": "grunt build",
     "start": "node index.js"
   },
   "dependencies": {
