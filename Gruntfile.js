@@ -79,34 +79,32 @@ module.exports = function(grunt) {
     },
 
     shell: {
-      prodServer: {
-        'git-add': {
-          command: 'git --no-pager add .',
-          options: {
-            stdout: true,
-            stderr: true,
-            // execOptions: { cwd: '../deploy'}
-          }
-        },
-        'git-commit':           {
-          command: 'git --no-pager commit -m "update"',
-          options: {
-            stdout: true,
-            stderr: true,
-            // execOptions: { cwd: '../deploy'}
-          }
-        },
-        'git-push':             {
-          command: 'git --no-pager push heroku master',
-          options: {
-            failOnError: true,
-            stdout: true,
-            stderr: true,
-            // execOptions: { cwd: '../deploy'}
-          }
+      'git-add': {
+        command: 'git --no-pager add .',
+        options: {
+          stdout: true,
+          stderr: true,
+          // execOptions: { cwd: '../deploy'}
+        }
+      },
+      'git-commit':           {
+        command: 'git --no-pager commit -m "update"',
+        options: {
+          stdout: true,
+          stderr: true,
+          // execOptions: { cwd: '../deploy'}
+        }
+      },
+      'git-push':             {
+        command: 'git --no-pager push heroku master',
+        options: {
+          failOnError: true,
+          stdout: true,
+          stderr: true,
+          // execOptions: { cwd: '../deploy'}
         }
       }
-    },
+    }
   });
 
   grunt.loadNpmTasks('grunt-contrib-uglify');
