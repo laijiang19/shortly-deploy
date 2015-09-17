@@ -146,11 +146,10 @@ module.exports = function(grunt) {
 
   grunt.registerTask('server-prod', [
     'shell'
-  ])
+  ]);
 
   grunt.registerTask('upload', function(n) {
-    if(grunt.option('prod')) {
-      console.log('remote server');
+    if (grunt.option('prod')) {
       grunt.task.run([ 'server-prod' ]);
     } else {
       console.log('local server');
@@ -160,6 +159,14 @@ module.exports = function(grunt) {
 
   grunt.registerTask('deploy', function(){
     grunt.task.run([ 'test', 'build', 'upload' ]);
+  });
+
+  grunt.registerTask('heroku:production', function(){
+    grunt.task.run([ 'build' ]);
+  });
+
+  grunt.registerTask('heroku:development', function(){
+    grunt.task.run([ 'build' ]);
   });
 
 };
