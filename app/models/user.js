@@ -6,6 +6,7 @@ var urlSchema = require('./link.js').urlSchema;
 var userSchema = mongoose.Schema({
   username: { type: String, unique: true },
   password: String,
+  hashed: { type: Boolean, default: false },
   links: [urlSchema]
 });
 
@@ -26,7 +27,13 @@ userSchema.methods.hashPassword = function(done){
 
 userSchema.pre('save', true, function(next, done){
   next();
-  this.hashPassword(done);
+  if (!this.hashed){
+    this.hashPassword(done);
+    this.hashed = true;
+  }
+  else {
+    done();
+  }
 });
 
 var User = mongoose.model('User', userSchema);
